@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>La Criée, les paniers du soir</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Stencil+Display:wght@700;900&family=Reem+Kufi:wght@600&family=Schibsted+Grotesk:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="top">
+  <a class="mark" href="#marche">La Criée<span lang="ar" dir="rtl">لا لهدر الطعام</span></a>
+  <nav aria-label="Espaces"><a href="#marche">Espace étudiant</a><a href="#tableau">Espace commerçant</a></nav>
+</header>
+<nav class="sub" id="sub" hidden aria-label="Espace commerçant"><a href="#tableau">Tableau de bord</a><a href="#test">Test de fraîcheur</a><a href="#historique">Historique</a><a href="#stock">Stock</a></nav>
+<main>
+<section id="marche">
+  <div class="hero">
+    <h1>Ce soir, les paniers baissent de prix.</h1>
+    <p>Boulangeries, traiteurs et marchés de Tunis mettent leurs invendus en caisse. Plus l’heure de fermeture approche, plus le prix descend. Réservez un panier, gardez-le dix minutes, retirez-le avec votre code.</p>
+  </div>
+  <form class="filters" id="flt" aria-label="Filtrer les paniers" onsubmit="return false">
+    <div><label for="fcat">Catégorie</label><select id="fcat"><option value="">Toutes les catégories</option></select></div>
+    <div><label for="floc">Quartier</label><select id="floc"></select></div>
+    <fieldset class="price"><legend>Prix (TND)</legend><div><label for="fmin">Min</label><input id="fmin" type="number" min="0" step="0.5" inputmode="decimal"></div><div><label for="fmax">Max</label><input id="fmax" type="number" min="0" step="0.5" inputmode="decimal"></div></fieldset>
+    <div class="filter-actions"><button type="button" class="ghost" id="freset">Réinitialiser les filtres</button><p id="fn" aria-live="polite"></p></div>
+  </form>
+  <div id="vr" class="rcols"><div><div class="radar" id="rd" role="group" aria-label="Radar des paniers"></div><p class="note">Plus un point est proche du centre, plus la fermeture approche. Sa couleur indique la fraîcheur, le chiffre le prix du moment.</p></div><ul class="tags" id="list" aria-label="Paniers disponibles"></ul></div>
+  <section id="tickets" class="tickets" hidden aria-labelledby="tickets-title"><h2 id="tickets-title" tabindex="-1">Mes tickets</h2><div id="ticket-list"></div></section>
+  <p id="market-status" class="status" role="status" aria-live="polite"></p>
+</section>
+<section id="test" hidden>
+  <div class="ledger">
+    <h1>Test de fraîcheur : mesurez avant de vendre.</h1>
+    <div class="cols">
+      <div>
+        <label for="cat">Catégorie</label>
+        <select id="cat"><option>Boulangerie</option><option>Pâtisserie</option><option>Plats cuisinés</option><option>Fruits &amp; légumes</option></select>
+        <label for="what">Contenu du panier</label>
+        <input id="what" placeholder="Ex. 4 baguettes, 2 croissants">
+        <label for="qloc">Quartier de l’étal</label>
+        <select id="qloc"></select>
+        <label for="b">Prix de base (TND)</label>
+        <input id="b" type="number" min="1" max="100" step="0.5" value="9" required>
+        <label for="ago">Fabriqué il y a (heures)</label>
+        <input id="ago" type="number" min="0" max="12" step="1" value="3" required>
+        <button id="go">Fermer la caisse et mesurer</button>
+        <button id="abort" class="ghost" hidden>Stopper les mesures</button>
+      </div>
+      <div>
+        <div class="scene" id="crate" role="img" aria-label="Boîte connectée en 3D : l’assiette entre, la porte se ferme, puis la mesure commence">
+ <div class="rig"><div class="box open" id="bx" data-c="Boulangerie">
+  <div class="f ft"></div><div class="f fl"></div><div class="f fr"></div><div class="f fb"></div><div class="f fk"></div>
+  <div class="fan"><u><i></i><i></i><i></i></u></div>
+  <div class="gas"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i><i style="--k:4"></i><i style="--k:5"></i></div>
+  <div class="scan"></div><div class="frame"></div><div class="door"></div>
+  <div class="plate"><i style="--k:0"></i><i style="--k:1"></i><i style="--k:2"></i><i style="--k:3"></i></div>
+ </div></div>
+</div>
+        <ol class="steps"><li>Porte fermée, le poids se stabilise</li><li>Pesée</li><li>Purge de l’air</li><li>Les gaz s’accumulent</li><li>Calcul du score</li></ol>
+        <div id="measure-progress" class="measure-progress" hidden><p id="measure-status" role="status" aria-live="polite"></p><progress id="measure-bar" max="30" value="0" aria-label="Progression de la mesure"></progress></div>
+        <div id="out" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</section>
+<section id="tableau" hidden>
+  <div class="ledger">
+    <h1>Tableau de bord</h1>
+    <div class="live" id="kp"></div>
+    <h2>Fraîcheur des 14 derniers tests</h2>
+    <svg id="ch" viewBox="0 0 300 106" role="img" aria-label="Barres de fraîcheur des 14 derniers tests, du plus ancien au plus récent" style="width:100%;max-width:560px"></svg>
+    <h2>Derniers résultats</h2><div id="rc"></div>
+    <h2>La boîte en direct</h2>
+    <div class="live" aria-live="off">
+      <div><b id="iw">1,45 kg</b><span>Poids dans la caisse</span></div>
+      <div><b id="it">4,2 °C</b><span>Température de la sonde</span></div>
+      <div><b id="ig">142 kΩ</b><span>Signal gaz</span></div>
+      <div><b id="id">Fermée</b><span>Porte</span></div>
+    </div>
+  </div>
+</section>
+<section id="historique" hidden>
+  <div class="ledger">
+    <h1>Historique des tests</h1>
+    <div class="tools"><div><label for="hq">Plat</label><input id="hq" type="search" placeholder="Nom du plat"></div><div><label for="hf">Fraîcheur</label><select id="hf"><option value="">Toutes</option><option value="mint">Bon</option><option value="saf">Modéré</option><option value="har">À surveiller</option></select></div><p id="hn" aria-live="polite"></p></div>
+    <div id="hl"></div>
+  </div>
+</section>
+<section id="stock" hidden>
+  <div class="ledger">
+    <h1>Stock de plats</h1>
+    <p>Les plats testés ces 30 derniers jours, avec leur dernier résultat. Retestez-en un en un clic.</p>
+    <div class="sc" id="sk"></div>
+  </div>
+</section>
+</main>
+<footer>Démonstration : les paniers et les mesures sont simulés dans cette page. Le score mélange le temps passé hors du froid et la variation du signal gaz. Le gaz seul ne mesure pas la fraîcheur du pain, c’est pourquoi le temps pèse davantage.</footer>
+
+<div id="ticket" hidden role="dialog" aria-modal="true" aria-labelledby="tt">
+  <div class="sheet"><h2 id="tt">Confirmer la réservation</h2><p id="tw"></p><p id="tc"></p>
+  <button id="tx">Confirmer la réservation</button><button id="tn" class="ghost">Annuler</button></div>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
